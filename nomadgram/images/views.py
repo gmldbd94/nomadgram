@@ -2,6 +2,7 @@
 from django.shortcuts import render
 
 #엘리먼트를 가져오고 method를 관리하는 멋진 클래스이다.
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -103,3 +104,33 @@ class Feed(APIView):
 
 # def get_key(image):
 #     return image.created_at
+
+
+class LikeImage(APIView):
+
+    def get(self, request, image_id, format=None):
+
+        user = request.user
+        try:
+            found_image = models.Image.objects.get(id=image_id)
+
+        except models.Image.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        #try문을 진행하고 만약 except 조건과 같은 문제라면 except문을 실행한다.
+
+        try:
+            preexisting_like = models.Like.objects.get(
+                creator=user,
+                image=found_image
+            )
+            preexisting_like.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except models.Like.DoesNotExist:
+            new_like = models.Like.objects.create(
+                creator=user,
+                image=found_image
+            )
+            new_like.save()
+            #try문을 통하여 좋아요가 존재하는지 확인하고 만약 존재하지 않는다면 except문이 실행된다.
+            return Response(status=status.HTTP_201_CREATED)
