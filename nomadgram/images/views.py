@@ -26,11 +26,12 @@ class faker_comment(APIView):
     def get(self, request, format=None):
         myfake = Faker()
         user = user_model.User.objects.all()
-        image = models.Image.objects.all()
+        images = models.Image.objects.all()
+        random_image = random.choice(images)
         comment = models.Comment.objects.create(
-            message = myfake.text(),
-            creator = random.choice(user),
-            image = random.choice(image),
+            message=myfake.text(),
+            image=random_image,
+            creator=random_image.creator,
         )
         return Response(status=200)
 

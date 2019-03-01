@@ -17,6 +17,12 @@ class Image(TimeStampedModel):
     caption = models.TextField()
     creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True, related_name='images')
 
+    # property는 종속된 함수를 작성할 때 사용한다고 보면 된다.
+    # like숫자를 함수를 작성해준 것이다.
+    @property
+    def likes_counts(self):
+        return self.likes.all().count()
+
     def __str__(self):
         return '{} - {}'.format(self.location, self.caption)
 
