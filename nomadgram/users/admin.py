@@ -15,4 +15,3 @@ class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (("User", {"fields": ("name","followers", "following",)}),) + auth_admin.UserAdmin.fieldsets
     list_display = ["username", "name", "is_superuser"]
     search_fields = ["name"]
-

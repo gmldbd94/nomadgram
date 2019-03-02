@@ -12,6 +12,7 @@ urlpatterns = [
 
     #이미지 좋아요하는 경로
     path('<int:image_id>/like/', views.LikeImage.as_view(), name="like_image"),
+    path('<int:image_id>/unlike/', views.unLikeImage.as_view(), name="unlike_image"),
     # 이미지 게시물에 댓글보는 경로
     path('<int:image_id>/comments/', views.CommentOnImage.as_view(), name='comment_image'),
 

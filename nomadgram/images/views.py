@@ -5,9 +5,10 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from . import models, serializers
 
 from faker import Faker
-from . import models, serializers
+
 import random
 from nomadgram.users import models as user_model
 
@@ -108,7 +109,7 @@ class Feed(APIView):
 
 class LikeImage(APIView):
 
-    def get(self, request, image_id, format=None):
+    def post(self, request, image_id, format=None):
 
         user = request.user
         try:
@@ -119,12 +120,7 @@ class LikeImage(APIView):
         #try문을 진행하고 만약 except 조건과 같은 문제라면 except문을 실행한다.
 
         try:
-            preexisting_like = models.Like.objects.get(
-                creator=user,
-                image=found_image
-            )
-            preexisting_like.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
 
         except models.Like.DoesNotExist:
             new_like = models.Like.objects.create(
@@ -134,6 +130,31 @@ class LikeImage(APIView):
             new_like.save()
             #try문을 통하여 좋아요가 존재하는지 확인하고 만약 존재하지 않는다면 except문이 실행된다.
             return Response(status=status.HTTP_201_CREATED)
+
+
+class unLikeImage(APIView):
+
+    def delete(self, request, image_id, format=None):
+
+        user = request.user
+        try:
+            found_image = models.Image.objects.get(id=image_id)
+
+        except models.Image.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            preexisting_like = models.Like.objects.get(
+                creator=user,
+                image=found_image
+            )
+            preexisting_like.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except models.Like.DoesNotExist:
+
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
+
 
 class CommentOnImage(APIView):
 
