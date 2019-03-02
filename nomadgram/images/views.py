@@ -164,3 +164,18 @@ class CommentOnImage(APIView):
         # 만약 csrf에러가 뜬다면 setting에서 보안을 해지애햐한다.
 
 
+class Comment(APIView):
+
+    def delete(self, request, comment_id, format=None):
+
+        user = request.user
+
+        try:
+            comment = models.Comment.objects.get(id=comment_id, creator=user)
+            comment.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except models.Comment.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+

@@ -35,6 +35,7 @@ class LikeAdmin(admin.ModelAdmin):
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
+        'id',
         'message',
         'creator',
         'image',

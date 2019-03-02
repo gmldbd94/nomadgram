@@ -12,12 +12,14 @@ urlpatterns = [
 
     #이미지 좋아요하는 경로
     path('<int:image_id>/like/', views.LikeImage.as_view(), name="like_image"),
-    # 이미지 게시물에 댓글다는 경로
-    path('<int:image_id>/comment/', views.CommentOnImage.as_view(), name='comment_image'),
+    # 이미지 게시물에 댓글보는 경로
+    path('<int:image_id>/comments/', views.CommentOnImage.as_view(), name='comment_image'),
 
+    #게시물에 댓글을 지우는 경로
+    path('comments/<int:comment_id>', views.Comment.as_view(), name="comment"),
 
     # 가짜데이터생성하기위한 경로
-    path('fake_image/', views.faker_image.as_view(), name="fake_image"),
+    path('fake_image/', views.faker_image.as_view(), name="fae_image"),
     path('fake_comment/', views.faker_comment.as_view(), name="fake_comment"),
 ]
 
