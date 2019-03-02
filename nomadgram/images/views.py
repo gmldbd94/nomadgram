@@ -134,3 +134,33 @@ class LikeImage(APIView):
             new_like.save()
             #try문을 통하여 좋아요가 존재하는지 확인하고 만약 존재하지 않는다면 except문이 실행된다.
             return Response(status=status.HTTP_201_CREATED)
+
+class CommentOnImage(APIView):
+
+
+    def post(self, request, image_id, format=None):
+
+        user = request.user
+
+        try:
+            found_image = models.Image.objects.get(id=image_id)
+        except models.Image.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+        serializer = serializers.CommentSerializer(data=request.data)
+
+        #serializer이 잘 작동하는지 확인해보는 것이다.
+        if serializer.is_valid():
+
+            serializer.save(creator=user, image=found_image)
+            print("correct serializer")
+
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+            print("Bad request")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # 만약 csrf에러가 뜬다면 setting에서 보안을 해지애햐한다.
+
+

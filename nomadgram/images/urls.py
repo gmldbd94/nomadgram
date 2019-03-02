@@ -10,8 +10,10 @@ urlpatterns = [
     # 인스타글을 보기위한 경로
     path('feed/', views.Feed.as_view(), name='feed'),
 
-    #게시글 CRUD 경로
+    #이미지 좋아요하는 경로
     path('<int:image_id>/like/', views.LikeImage.as_view(), name="like_image"),
+    # 이미지 게시물에 댓글다는 경로
+    path('<int:image_id>/comment/', views.CommentOnImage.as_view(), name='comment_image'),
 
 
     # 가짜데이터생성하기위한 경로
