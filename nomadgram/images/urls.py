@@ -19,6 +19,9 @@ urlpatterns = [
     #게시물에 댓글을 지우는 경로
     path('comments/<int:comment_id>', views.Comment.as_view(), name="comment"),
 
+    #해쉬태그 검색경로
+    path('search/', views.Search.as_view(), name="search"),
+
     # 가짜데이터생성하기위한 경로
     path('fake_image/', views.faker_image.as_view(), name="fae_image"),
     path('fake_comment/', views.faker_comment.as_view(), name="fake_comment"),

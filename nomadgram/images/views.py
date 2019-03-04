@@ -200,3 +200,33 @@ class Comment(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+class Search(APIView):
+
+    def get(self, request, format=None):
+
+        hashtags = request.query_params.get('hashtag', None)
+
+        if hashtags is not None:
+
+            hashtags = hashtags.split(",")
+
+            images = models.Image.objects.filter(tags__name__in=hashtags).distinct()
+
+            serializer = serializers.CountImagesSerializer(images, many=True)
+
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+        else:
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # deep_ralationship을 검색하는 기능
+        # title: 'hello',
+        # location: 'bogota',
+        # creator: (User:
+        #           id:1,
+        #           username:'nomadmin'
+        #           )
+        # 위와 같은 테이블에서 'noma'라는 문자열이 포환된 값을 검색할 떄
+        # models.Image.objects.filter(creator_username_contains='noma')
+        #icontains 은 소문자대분자를 구분하지 않고 검색한다.
+        #iexact 은 정확히 일치하는 값을 검색
