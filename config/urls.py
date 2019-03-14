@@ -16,11 +16,10 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path(
-        "users/",
-        include("nomadgram.users.urls", namespace="users"),
-    ),
+        "users/", include("nomadgram.users.urls")),
     path("accounts/", include("allauth.urls")),
     path("images/", include("nomadgram.images.urls")),
+    path("notifications/", include("nomadgram.notification.urls"))
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT

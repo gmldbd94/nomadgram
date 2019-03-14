@@ -71,10 +71,10 @@ THIRD_PARTY_APPS = [
     'taggit', # Tags for the
 ]
 LOCAL_APPS = [
-    'nomadgram.users.apps.UsersAppConfig',
     # Your stuff: custom apps go here
+    'nomadgram.users.apps.UsersAppConfig',
     'nomadgram.images.apps.ImagesConfig',
-
+    'nomadgram.notification.apps.NotificationConfig',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

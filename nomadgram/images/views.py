@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from . import models, serializers
-
+from nomadgram.notification import views as notification_views
 from faker import Faker
 
 import random
@@ -113,22 +113,27 @@ class LikeImage(APIView):
 
         user = request.user
         try:
-            found_image = models.Image.objects.get(id=image_id)
+            found_image = models.Image.objects.get(pk=image_id)
 
         except models.Image.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         #try문을 진행하고 만약 except 조건과 같은 문제라면 except문을 실행한다.
 
         try:
+            new_like = found_image.likes.get(creator=user)
             return Response(status=status.HTTP_304_NOT_MODIFIED)
 
+        # except found_image.DoesNotExist:
         except models.Like.DoesNotExist:
             new_like = models.Like.objects.create(
                 creator=user,
-                image=found_image
+                image=found_image,
             )
             new_like.save()
-            #try문을 통하여 좋아요가 존재하는지 확인하고 만약 존재하지 않는다면 except문이 실행된다.
+
+            notification_views.create_notification(user, found_image.creator, 'like', found_image)
+
+        # try문을 통하여 좋아요가 존재하는지 확인하고 만약 존재하지 않는다면 except문이 실행된다.
             return Response(status=status.HTTP_201_CREATED)
 
 
@@ -138,7 +143,7 @@ class unLikeImage(APIView):
 
         user = request.user
         try:
-            found_image = models.Image.objects.get(id=image_id)
+            found_image = models.Image.objects.get(pk=image_id)
 
         except models.Image.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -152,7 +157,6 @@ class unLikeImage(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         except models.Like.DoesNotExist:
-
             return Response(status=status.HTTP_304_NOT_MODIFIED)
 
 
@@ -176,6 +180,8 @@ class CommentOnImage(APIView):
 
             serializer.save(creator=user, image=found_image)
             print("correct serializer")
+
+            notification_views.create_notification(user, found_image.creator, 'comment', found_image, serializer.data['message'])
 
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
